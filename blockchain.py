@@ -121,16 +121,16 @@ class Blockchain:
 def main():
 
     test_chain = Blockchain()
-    test_chain.read('test_chain')
+    #test_chain.read('test_chain')
 
-    """
+    
     test_chain.append("The first block in my test block chain")
     test_chain.append("This is the second block in my test block chain")
     test_chain.append("This is the third block")
     test_chain.append("Number 4")
 
-    test_chain.save('test_chain')
-    """
+    #test_chain.save('test_chain')
+    
     
     for block in test_chain:
         print(block)

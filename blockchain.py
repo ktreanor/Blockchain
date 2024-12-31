@@ -4,47 +4,42 @@ import pickle
 class Blockchain:
 
     def __init__(self):
-        """Blockchain initializer
-        """
+        """Blockchain initializer"""
         self.__chain = []
 
     def __iter__(self):
-        """Makes the blockchain iterable
+        """Dunder method to make the blockchain iterable"""
 
-        Yields:
-            _type_: Block
-        """
         for current_block in self.__chain:
             yield current_block
 
-    def __getitem__(self, key: int) -> Block:
-        """Allows a block in a blockchain to be referenced via index
+    def __getitem__(self, index):
+        """Dunder method to allows blocks in the blockchain to be referenced via index
 
-        Args:
-            key (int): The index location of the block in the blockchain
-
-        Returns:
-            Block: The bloc being indexed
+        :param key: The index location of the block in the blockchain
+        :type key: int
+        :return: The bloc being indexed
+        :rtype: Block
         """
-        return self.__chain[key]
+
+        return self.__chain[index]
 
     def __len__(self) -> int:
 
         return len(self.__chain)
 
-    def __append_genesis(self) -> None:
-        """Creates the genesis block of a blockchain (the first block)
-        """
+    def __append_genesis(self):
+        """Creates the genesis block of a blockchain (the first block)"""
 
         # All genesis blocks' previous hash value is all 0
         genesis_block = Block(0, "Genesis Block", "0" * 64)
         self.__chain.append(genesis_block)
 
-    def append(self, data: str):
-        """Adds a new block to the blockchain
+    def append(self, data):
+        """Adds a new block to the end of the blockchain
 
-        Args:
-            data (str): The data packet of the block
+        :param data: The data packet of the block
+        :type data: str
         """
 
         # If this is an empty blockchain a genesis block must be created first
@@ -61,9 +56,8 @@ class Blockchain:
         # Add the new block to the chain
         self.__chain.append(new_block)
 
-    def refresh_chain(self) -> None:
-        """Runs through the blockchain recreating all hash's using the nonce
-        """
+    def refresh_chain(self):
+        """Runs through the blockchain recreating all hash's using the stored nonce"""
 
         # Genesis blocks always have a previous hash value of all 0
         previous_hash = "0" * 64
@@ -73,39 +67,39 @@ class Blockchain:
             current_block.previous_hash = previous_hash
             previous_hash = current_block.hash
 
-    def save(self, file_name: str):
+    def save(self, file_name):
         """Saves the blockchain to a file
 
-        Args:
-            file_name (str): Nave of teh blockchain file
+        :param file_name: Name of the file representing the blockchain
+        :type file_name: str
         """
-        
-        # Check to see if the file name has the right extension, if not add it 
+
+        # Check to see if the file name has the right extension, if not add it
         if file_name[-4:] != '.blk':
             file_name += '.blk'
-        
+
         with open(file_name, 'wb') as f:
             pickle.dump(self.__chain, f)
 
-    def read(self, file_name: str):
-        """Opens a saved blockchain
+    def load(self, file_name):
+        """Opens a saved blockchain from file
 
-        Args:
-            file_name (str): Name of the blockchain file
+        :param file_name: Name of the blockchain file
+        :type file_name: str
         """
 
-        # Check to see if the file name has the right extension, if not add it 
+        # Check to see if the file name has the right extension, if not add it
         if file_name[-4:] != '.blk':
             file_name += '.blk'
 
         with open(file_name, 'rb') as f:
             self.__chain = pickle.load(f)
 
-    def is_valid(self) -> bool:
-        """Checks the blockchain to insure it's valid.
+    def is_valid(self):
+        """Scans the blockchain to confirm validity.
 
-        Returns:
-            bool: True if the blockchain is valid, False if it is not
+        :returns: True if the blockchain is valid, False if it is not
+        :rtype: bool
         """
 
         # The genesis block always has a hash of all 0
@@ -118,22 +112,27 @@ class Blockchain:
             previous_hash = current_block.hash
         return valid_blockchain
 
-def main():
-
-    test_chain = Blockchain()
-    #test_chain.read('test_chain')
-
-    
-    test_chain.append("The first block in my test block chain")
-    test_chain.append("This is the second block in my test block chain")
-    test_chain.append("This is the third block")
-    test_chain.append("Number 4")
-
-    #test_chain.save('test_chain')
-    
-    
-    for block in test_chain:
-        print(block)
 
 if __name__ == "__main__":
-    main()
+
+    test_chain = Blockchain()
+    new_load = input('Would you like to create a new blockchain or load an existing one? (new/load): ')
+
+    if new_load == 'new':
+        print('Keep entering the payload for the blocks, when you are done enter an empty payload')
+
+        payload = input('Payload: ')
+        while payload != '':
+            test_chain.append(payload)
+            payload = input('Payload: ')
+
+        save = input('Would you like to save the blockchain? (yes/no): ')
+        if save == 'yes':
+            file_name = input('Enter the file name: ')
+            test_chain.save(file_name)
+    else:
+        chain_name = input('Enter the file name of the blockchain you want to load: ')
+        test_chain.load(chain_name)
+
+        for block in test_chain:
+            print(block)

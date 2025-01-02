@@ -15,17 +15,15 @@ class Block:
 
     # Block payload
     __data: str
-    #__data: tuple
+    #__data: list
 
-    def __init__(self, index, data, previous_hash):
-        """Block initialization
+    def __init__(self, index: int, data: str, previous_hash: str) -> None:
+        """Block initializer
 
-        :param index: Block index
-        :type index: int
-        :param data: Payload of the block
-        :type data: str
-        :param previous_hash: The hash key of the previous block in the chain
-        :type previous_hash: str
+        Args:
+            index (int): Block index
+            data (str): Payload of the block
+            previous_hash (str): The hash of the previous block in the chain
         """
 
         self.__index = index
@@ -34,11 +32,11 @@ class Block:
 
         self.__mine()
 
-    def __str__(self):
-        """Returns a human-readable (informal) string representation of the Block
+    def __str__(self) -> str:
+        """A human-readable (informal) string representation of the Block
 
-        :return: String with all the base elements of the Block
-        :rtype: str
+        Returns:
+            str: All the base elements of the Block
         """
 
         return (
@@ -50,97 +48,71 @@ class Block:
             f'Timestamp: {self.__timestamp}\n'
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Returns a more information-rich, or official, string representation of the Block.
+
+        Returns:
+            str: Printable representation of the object
         """
         return f'Block({self.__index}, \'{self.__previous_hash}\', \'{self.__data}\')'
 
     @property
-    def index(self):
-        """Index of the block
+    def index(self) -> str:
+        """Index of the block"""
 
-        :return: Block index
-        :rtype: int
-        """
         return self.__index
 
     @property
-    def data(self):
-        """The payload of the block
+    def data(self) -> str:
+        """The payload of the block (WARNING, setting the data will break the block, it's to be used for testing)"""
 
-        :returns: Payload of the block
-        :rtype: str
-        """
         return self.__data
 
-    # TODO: Remove this, it's for testing only
+    # TODO: Change this to throw an error
     @data.setter
-    def data(self, value):
-        """Sets the data of the block (WARNING, this will break the block, it's to be used for testing)
-
-        :param value: Data to be set in the block
-        :type value: str
-        """
+    def data(self, value: str) -> None:
 
         self.__data = value
 
     @property
-    def nonce(self):
-        """Nonce (proof of work) of the block
-
-        :returns: Nonce of the block
-        :rtype: int
-        """
+    def nonce(self) -> int:
+        """The nonce (proof of work) of the block"""
         return self.__nonce
 
     @property
-    def hash(self):
-        """Hash of the block
+    def hash(self) -> str:
+        """The hash of the block"""
 
-        :return: Hash of the block
-        :rtype: str
-        """
         mashed_block = str(self.__index) + self.__data + self.__previous_hash + str(self.__nonce)
         return sha256(mashed_block.encode("utf-8")).hexdigest()
 
     @property
-    def previous_hash(self):
-        """Previous block's hash
-
-        :return: Hash of the previous block
-        :rtype: str
+    def previous_hash(self) -> str:
+        """Previous block's hash (WARNING, this will break the block, it's to be used for testing only)
         """
         return self.__previous_hash
 
     @previous_hash.setter
-    def previous_hash(self, value):
-        """Sets the previous hash of the block (WARNING, this will break the block, it's to be used for testing)
-
-        :param value: Hash of the previous block
-        :type value: str
-        """
+    def previous_hash(self, value: str) -> None:
 
         self.__previous_hash = value
 
     @property
-    def timestamp(self):
-        """Returns the timestamp of the block when successfully mined
+    def timestamp(self) -> float:
+        """The timestamp of when the Block was successfully mined"""
 
-        :return: Timestamp of the block
-        :rtype: datetime
-        """
         return self.__timestamp
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Confirms the nonce saved creates a hash that obeys the difficulty rules
 
-        :return: True if the block is valid, False if not
-        :rtype: bool
+        Returns:
+            str: True if the block is valid, False otherwise
         """
 
         return self.hash[:self.DIFFICULTY] == self.PROOF * self.DIFFICULTY
 
-    def __mine(self):
+    def __mine(self) -> None:
         """Function used to 'mine' the block, or create the proof of work"""
 
         nonce = 1

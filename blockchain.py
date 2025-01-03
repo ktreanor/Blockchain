@@ -13,13 +13,14 @@ class Blockchain:
         for current_block in self.__chain:
             yield current_block
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Block:
         """Dunder method to allows blocks in the blockchain to be referenced via index
 
-        :param key: The index location of the block in the blockchain
-        :type key: int
-        :return: The bloc being indexed
-        :rtype: Block
+        Args:
+            index (int): The index location of the block in the blockchain
+        
+        Returns:
+            Block: The bloc being indexed
         """
 
         return self.__chain[index]
@@ -35,11 +36,11 @@ class Blockchain:
         genesis_block = Block(0, "Genesis Block", "0" * 64)
         self.__chain.append(genesis_block)
 
-    def append(self, data):
+    def append(self, data: str):
         """Adds a new block to the end of the blockchain
 
-        :param data: The data packet of the block
-        :type data: str
+        Args:
+            data (str): The data packet of the block
         """
 
         # If this is an empty blockchain a genesis block must be created first
@@ -67,11 +68,11 @@ class Blockchain:
             current_block.previous_hash = previous_hash
             previous_hash = current_block.hash
 
-    def save(self, file_name):
+    def save(self, file_name: str):
         """Saves the blockchain to a file
 
-        :param file_name: Name of the file representing the blockchain
-        :type file_name: str
+        Args:
+            file_name (str): Name of the file
         """
 
         # Check to see if the file name has the right extension, if not add it
@@ -81,11 +82,11 @@ class Blockchain:
         with open(file_name, 'wb') as f:
             pickle.dump(self.__chain, f)
 
-    def load(self, file_name):
+    def load(self, file_name: str):
         """Opens a saved blockchain from file
 
-        :param file_name: Name of the blockchain file
-        :type file_name: str
+        Args:
+            file_name (str): Name of the file storing the blockchain
         """
 
         # Check to see if the file name has the right extension, if not add it
@@ -95,11 +96,11 @@ class Blockchain:
         with open(file_name, 'rb') as f:
             self.__chain = pickle.load(f)
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Scans the blockchain to confirm validity.
 
-        :returns: True if the blockchain is valid, False if it is not
-        :rtype: bool
+        Returns:
+            bool: True if the blockchain is valid, False otherwise
         """
 
         # The genesis block always has a hash of all 0
@@ -110,6 +111,7 @@ class Blockchain:
             if previous_hash != current_block.previous_hash:
                 valid_blockchain = False
             previous_hash = current_block.hash
+
         return valid_blockchain
 
 
@@ -136,3 +138,5 @@ if __name__ == "__main__":
 
         for block in test_chain:
             print(block)
+    
+    print(test_chain[2])
